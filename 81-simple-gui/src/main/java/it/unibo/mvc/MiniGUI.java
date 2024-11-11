@@ -1,8 +1,12 @@
 package it.unibo.mvc;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -18,6 +22,7 @@ import java.util.Random;
  */
 public class MiniGUI {
 
+    private static final String LABEL = "Risultato";
     private static final String TITLE = "A very simple GUI application";
     private static final int PROPORTION = 5;
     private final Random randomGenerator = new Random();
@@ -30,16 +35,18 @@ public class MiniGUI {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
         final JButton write = new JButton("Print a random number on standard output");
-        canvas.add(write, BorderLayout.CENTER);
-        frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        /*
-         * Handlers
-         */
+        final JPanel myPanel =new JPanel();
+        myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.X_AXIS));//new JButton("my button that perform anything");
+        myPanel.add(write);
+        canvas.add(myPanel, BorderLayout.CENTER);
+        final JTextField myTextField = new JTextField(LABEL);
+        canvas.add(myTextField, BorderLayout.NORTH);    
+        frame.setContentPane(canvas);//serve per dire al frame che deve mostrare a schermo il pannello principale: canvas.
         write.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                System.out.println(randomGenerator.nextInt());
+                myTextField.setText(Integer.valueOf(randomGenerator.nextInt()).toString());
             }
         });
     }
