@@ -4,6 +4,9 @@ import it.unibo.mvc.api.DrawNumber;
 import it.unibo.mvc.api.DrawNumberController;
 import it.unibo.mvc.api.DrawNumberView;
 
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -13,7 +16,7 @@ import java.util.Objects;
 public final class DrawNumberControllerImpl implements DrawNumberController {
 
     private final DrawNumber model;
-    private DrawNumberView view;
+    private Collection<DrawNumberView> view = new ArrayList<>();
 
     /**
      * Builds a new game controller provided a game model.
@@ -27,17 +30,16 @@ public final class DrawNumberControllerImpl implements DrawNumberController {
     @Override
     public void addView(final DrawNumberView view) {
         Objects.requireNonNull(view, "Cannot set a null view");
-        if (this.view != null) {
-            throw new IllegalStateException("The view is already set! Multiple views are not supported");
-        }
-        this.view = view;
+        this.view.add(view);
         view.setController(this);
         view.start();
     }
 
     @Override
     public void newAttempt(final int n) {
-        Objects.requireNonNull(view, "There is no view attached!").result(model.attempt(n));
+        for(final DrawNumberView e: this.view){
+            Objects.requireNonNull(e, "There is no view attached!").result(model.attempt(n));
+        }
     }
 
     @Override
