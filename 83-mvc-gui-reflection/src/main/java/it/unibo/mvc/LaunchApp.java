@@ -1,6 +1,10 @@
 package it.unibo.mvc;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import it.unibo.mvc.api.DrawNumberController;
+import it.unibo.mvc.api.DrawNumberView;
 import it.unibo.mvc.controller.DrawNumberControllerImpl;
 import it.unibo.mvc.model.DrawNumberImpl;
 import it.unibo.mvc.view.DrawNumberSwingView;
@@ -23,9 +27,32 @@ public final class LaunchApp {
      * @throws IllegalAccessException in case of reflection issues
      * @throws IllegalArgumentException in case of reflection issues
      */
-    public static void main(final String... args) {
-        final var model = new DrawNumberImpl();
+    public static void main(final String... args) 
+        throws
+        ClassNotFoundException, 
+        NoSuchMethodException, 
+        InvocationTargetException, 
+        InstantiationException, 
+        IllegalAccessException, 
+        IllegalArgumentException{
+       final var model = new DrawNumberImpl();
         final DrawNumberController app = new DrawNumberControllerImpl(model);
         app.addView(new DrawNumberSwingView());
+        app.addView(new DrawNumberSwingView());
+        app.addView(new DrawNumberSwingView());
+        try {
+            Class<?> clazz = Class.forName("it.unibo.mvc.view.DrawNumberSTDOView");
+            Constructor<?>[] ctr = clazz.getConstructors();  
+            for(Constructor<?> c: ctr){
+                if(c.getParameterCount() == 0);
+                app.addView((DrawNumberView)c.newInstance());
+                app.addView((DrawNumberView)c.newInstance());
+                app.addView((DrawNumberView)c.newInstance());
+            }        
+        } catch (ClassNotFoundException | SecurityException e) {
+            System.out.println("Class not found");
+        }
     }
+        
 }
+
